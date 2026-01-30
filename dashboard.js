@@ -3,17 +3,28 @@ const welcome = document.getElementById('welcome');
 const username = localStorage.getItem('loggedInUser');
 welcome.innerHTML = `Welcome ${username}`;
 
+/*
+----------------------------------------------------
+NEW ADDITION
+----------------------------------------------------
+We store the logged-in username in a variable.
+This will be used as a PREFIX for localStorage keys
+so each user gets separate income & expense data.
+----------------------------------------------------
+*/
+const currentUser = username;
+
 
 // INCOME SECTION
 // load existing data from local storage
 // get saved total balance from local storage, if exists; else start with zero.
-let total = Number(localStorage.getItem('totalBalance')) || 0;  
+let total = Number(localStorage.getItem(`${currentUser}_totalBalance`)) || 0;  
 
 // show total balance in the balance box
 document.getElementById('totalBalance').innerHTML = `Rs ${total} /-`;
 
 // get saved income list from local storage, if exists; else start with empty array.
-let incomeList = JSON.parse(localStorage.getItem('incomeList')) || [];
+let incomeList = JSON.parse(localStorage.getItem(`${currentUser}_incomeList`)) || [];
 
 // show(render) each saved income row in the table 
 incomeList.forEach(item => {     // item is one object from incomeList
@@ -91,10 +102,10 @@ incomeList.push({
 });
 
 // save the updated income list in local storage
-localStorage.setItem("incomeList", JSON.stringify(incomeList));
+localStorage.setItem(`${currentUser}_incomeList`, JSON.stringify(incomeList));
 
 // save the updated total balance in local storage
-localStorage.setItem("totalBalance", total);
+localStorage.setItem(`${currentUser}_totalBalance`, total);
    
    // clear input fields
    document.getElementById('incomeType').value = "";   // clear type field
@@ -111,13 +122,13 @@ localStorage.setItem("totalBalance", total);
 // EXPENSE SECTION
 // load existing data from  local storage
 // get saved total expense from local storage, if exists; else start with zero.
-let totalExp = Number(localStorage.getItem('totalExpense')) || 0;
+let totalExp = Number(localStorage.getItem(`${currentUser}_totalExpense`)) || 0;
 
 // show total expense in the expense box
 document.getElementById('totalExpense').innerHTML = `Rs ${totalExp} /-`;
 
 // get saved expense list from local storage, if exists; else start with empty array.
-let expenseList = JSON.parse(localStorage.getItem('expenseList')) || [];
+let expenseList = JSON.parse(localStorage.getItem(`${currentUser}_expenseList`)) || [];
 
 // show(render) each saved expense row in the table
 expenseList.forEach(item=>{
@@ -128,7 +139,7 @@ expenseList.forEach(item=>{
     tableRow.innerHTML = `
              <td class="border p-2">${item.type}</td>
         <td class="border p-2">Rs ${item.amount}</td>
-        <td class="border p-2">Rs ${item.balance}</td>
+        <td class="border p-2">${item.balance}</td>
         <td class="border p-2">${item.dateTime}</td>
     `;
 
@@ -173,6 +184,7 @@ function addExpenses(){
         totalExp = totalExp + expenseAmount; // increase expense
         alert("Expense added successfully");
         totalExpense.innerHTML = `Rs ${totalExp} /-`;  // show updated total expense
+        document.getElementById('totalBalance').innerHTML = `Rs ${total} /-`;
     }
 
     // get current date and time
@@ -201,10 +213,13 @@ function addExpenses(){
        });
 
        // save the updated expense list in local storage
-       localStorage.setItem("expenseList",JSON.stringify(expenseList));
+       localStorage.setItem(`${currentUser}_expenseList`,JSON.stringify(expenseList));
 
        // save the updated total expense in local storage
-       localStorage.setItem("totalExpense",totalExp);
+       localStorage.setItem(`${currentUser}_totalExpense`,totalExp);
+
+       // save the updated balance in local storage
+       localStorage.setItem(`${currentUser}_totalBalance`, total);
 
        // clear input fields
        document.getElementById('expenseType').value = "";  // clear type field
@@ -230,10 +245,10 @@ function clearAll() {
 
         // Remove all relevant data from localStorage
         // This deletes all saved income and expense data permanently
-        localStorage.removeItem("incomeList");       // remove saved income records
-        localStorage.removeItem("expenseList");      // remove saved expense records
-        localStorage.removeItem("totalBalance");     // remove saved total balance
-        localStorage.removeItem("totalExpense");     // remove saved total expense
+        localStorage.removeItem(`${currentUser}_incomeList`);       // remove saved income records
+        localStorage.removeItem(`${currentUser}_expenseList`);      // remove saved expense records
+        localStorage.removeItem(`${currentUser}_totalBalance`);     // remove saved total balance
+        localStorage.removeItem(`${currentUser}_totalExpense`);     // remove saved total expense
 
         // Reset the JS variables used in the script
         // This is important so that new entries start from zero
@@ -266,6 +281,3 @@ function logout(){
     // when user pressed logout button it goes to login page
     window.location = './login.html';
 }
-
-
-
