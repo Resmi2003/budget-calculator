@@ -4,13 +4,9 @@ const username = localStorage.getItem('loggedInUser');
 welcome.innerHTML = `Welcome ${username}`;
 
 /*
-----------------------------------------------------
-NEW ADDITION
-----------------------------------------------------
 We store the logged-in username in a variable.
 This will be used as a PREFIX for localStorage keys
 so each user gets separate income & expense data.
-----------------------------------------------------
 */
 const currentUser = username;
 
@@ -241,7 +237,7 @@ function clearAll() {
         return;  
     } 
     else {
-        // --- User pressed OK, proceed to clear everything ---
+        // User pressed OK, proceed to clear everything
 
         // Remove all relevant data from localStorage
         // This deletes all saved income and expense data permanently
@@ -267,7 +263,7 @@ function clearAll() {
         document.getElementById('receiptBody').innerHTML = "";          // clear income table
         document.getElementById('expenseReceiptBody').innerHTML = "";   // clear expense table
 
-        // Optional: give a message to user
+        // give a message to user
         alert("All data cleared successfully!");  // show success message
     }
 }
